@@ -8,15 +8,299 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-//consider this edited!
 namespace GarageAutomation
 {
     public partial class MainForm : Form
     {
+
+        #region private variables
+
+        private bool databaseHasConnection;
+        private string passwordPin;
+        private int timeOutCount = 0;
+        private int maxTimeOut = 10;
+
+        private DatabaseManager dbManager;
+
+        #endregion
+
         public MainForm()
         {
             InitializeComponent();
         }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            //add splash screen elements.
+
+
+            //add ethercat interface (this is required to simulate hardware)
+
+
+            //add database connection test      
+            dbManager = new DatabaseManager();
+            
+
+            //enable pin timeout
+            pinTimeout.Tick += pinTimeout_Tick;
+
+
+
+        }
+
+        void pinTimeout_Tick(object sender, EventArgs e)
+        {
+            timeOutCount++;
+            if (timeOutCount == maxTimeOut)
+            {
+                lblPinScreen.Text = "Please Enter a Pin";
+                timeOutCount = 0;
+                passwordPin = string.Empty;
+            }
+        }
+
+        private void pinTimeOutStartCheck()
+        {
+            if (lblPinScreen.Text == "Please Enter a Pin")
+            {
+                lblPinScreen.Text = string.Empty;
+                pinTimeout.Enabled = true;
+            }
+        }
+
+        #region Number Pad Button Clicks
+        private void btnNumber1_Click(object sender, EventArgs e)
+        {
+            pinTimeOutStartCheck();
+            passwordPin += 1;
+            lblPinScreen.Text += "*";
+        }
+
+        private void btnNumber2_Click(object sender, EventArgs e)
+        {
+            pinTimeOutStartCheck();
+            passwordPin += 2;
+            lblPinScreen.Text += "*";
+        }
+
+        private void btnNumber3_Click(object sender, EventArgs e)
+        {
+            pinTimeOutStartCheck();
+            passwordPin += 3;
+            lblPinScreen.Text += "*";
+        }
+
+        private void btnNumber4_Click(object sender, EventArgs e)
+        {
+            pinTimeOutStartCheck();
+            passwordPin += 4;
+            lblPinScreen.Text += "*";
+        }
+
+        private void btnNumber5_Click(object sender, EventArgs e)
+        {
+            pinTimeOutStartCheck();
+            passwordPin += 5;
+            lblPinScreen.Text += "*";
+        }
+
+        private void btnNumber6_Click(object sender, EventArgs e)
+        {
+            pinTimeOutStartCheck();
+            passwordPin += 6;
+            lblPinScreen.Text += "*";
+        }
+
+        private void btnNumber7_Click(object sender, EventArgs e)
+        {
+            pinTimeOutStartCheck();
+            passwordPin += 7;
+            lblPinScreen.Text += "*";
+        }
+
+        private void btnNumber8_Click(object sender, EventArgs e)
+        {
+            pinTimeOutStartCheck();
+            passwordPin += 8;
+            lblPinScreen.Text += "*";
+        }
+
+        private void btnNumber9_Click(object sender, EventArgs e)
+        {
+            pinTimeOutStartCheck();
+            passwordPin += 9;
+            lblPinScreen.Text += "*";
+        }
+
+        private void btnNumber0_Click(object sender, EventArgs e)
+        {
+            pinTimeOutStartCheck();
+            passwordPin += 0;
+            lblPinScreen.Text += "*";
+        }
+
+        #endregion
+
+        private void btnEnter_Click(object sender, EventArgs e)
+        {
+            //stop timer
+            pinTimeout.Enabled = false;
+            //compare entered pin to database item
+            dbManager.queryPin(convertPin(passwordPin));
+            
+
+        }
+
+        private int convertPin(string pin)
+        {
+            return Convert.ToInt32(pin);
+        }
+
+        private void btnBkSpc_Click(object sender, EventArgs e)
+        {
+
+            if (lblPinScreen.Text == "Please Enter a Pin" || lblPinScreen.Text == string.Empty)
+            {
+                return;
+            }
+
+            passwordPin = passwordPin.Remove(passwordPin.Length - 1);
+            lblPinScreen.Text = lblPinScreen.Text.Remove(lblPinScreen.Text.Length - 1);
+        }
+
+        private void btnPrintTicket_Click(object sender, EventArgs e)
+        {
+            //do some vodoo magic here (with printing)
+
+        }
+
+        #region Radio Buttons
+        private void stopPremiumParkingRadioEvents()
+        {
+            rdPremium1day.CheckedChanged -= rdPremium1day_CheckedChanged;
+            rdPremium1Hour.CheckedChanged -= rdPremium1Hour_CheckedChanged;
+            rdPremium2days.CheckedChanged -= rdPremium2days_CheckedChanged;
+            rdPremium2Hours.CheckedChanged -= rdPremium2Hours_CheckedChanged;
+            rdPremium4Hours.CheckedChanged -= rdPremium4Hours_CheckedChanged;
+        }
+
+        private void startPremiumParkingRadioEvents()
+        {
+            rdPremium1day.CheckedChanged += rdPremium1day_CheckedChanged;
+            rdPremium1Hour.CheckedChanged += rdPremium1Hour_CheckedChanged;
+            rdPremium2days.CheckedChanged += rdPremium2days_CheckedChanged;
+            rdPremium2Hours.CheckedChanged += rdPremium2Hours_CheckedChanged;
+            rdPremium4Hours.CheckedChanged += rdPremium4Hours_CheckedChanged;
+        }
+
+        private void stopStandardParkingRadioEvents()
+        {
+            rdStandard1day.CheckedChanged -= rdStandard1day_CheckedChanged;
+            rdStandard1Hour.CheckedChanged -= rdStandard1Hour_CheckedChanged;
+            rdStandard2days.CheckedChanged -= rdStandard2days_CheckedChanged;
+            rdStandard2Hours.CheckedChanged -= rdStandard2Hours_CheckedChanged;
+            rdStandard4Hours.CheckedChanged -= rdStandard4Hours_CheckedChanged;
+        }
+
+        private void startStandardParkingRadioEvents()
+        {
+            rdStandard1day.CheckedChanged += rdStandard1day_CheckedChanged;
+            rdStandard1Hour.CheckedChanged += rdStandard1Hour_CheckedChanged;
+            rdStandard2days.CheckedChanged += rdStandard2days_CheckedChanged;
+            rdStandard2Hours.CheckedChanged += rdStandard2Hours_CheckedChanged;
+            rdStandard4Hours.CheckedChanged += rdStandard4Hours_CheckedChanged;
+        }
+
+        private void uncheckAllPremium()
+        {
+            rdPremium1day.Checked = false;
+            rdPremium1Hour.Checked = false;
+            rdPremium2days.Checked = false;
+            rdPremium2Hours.Checked = false;
+            rdPremium4Hours.Checked = false;      
+        }
+
+        private void uncheckAllStandard()
+        {
+            rdStandard1day.Checked = false;
+            rdStandard1Hour.Checked = false;
+            rdStandard2days.Checked = false;
+            rdStandard2Hours.Checked = false;
+            rdStandard4Hours.Checked = false;   
+        }
+
+        private void rdStandard1Hour_CheckedChanged(object sender, EventArgs e)
+        {
+            stopPremiumParkingRadioEvents();
+            uncheckAllPremium();
+            startPremiumParkingRadioEvents();
+
+        }
+
+        private void rdStandard2Hours_CheckedChanged(object sender, EventArgs e)
+        {
+            stopPremiumParkingRadioEvents();
+            uncheckAllPremium();
+            startPremiumParkingRadioEvents();
+        }
+
+        private void rdStandard4Hours_CheckedChanged(object sender, EventArgs e)
+        {
+            stopPremiumParkingRadioEvents();
+            uncheckAllPremium();
+            startPremiumParkingRadioEvents();
+        }
+
+        private void rdStandard1day_CheckedChanged(object sender, EventArgs e)
+        {
+            stopPremiumParkingRadioEvents();
+            uncheckAllPremium();
+            startPremiumParkingRadioEvents();
+        }
+
+        private void rdStandard2days_CheckedChanged(object sender, EventArgs e)
+        {
+            stopPremiumParkingRadioEvents();
+            uncheckAllPremium();
+            startPremiumParkingRadioEvents();
+        }
+
+        private void rdPremium1Hour_CheckedChanged(object sender, EventArgs e)
+        {
+            stopStandardParkingRadioEvents();
+            uncheckAllStandard();
+            startStandardParkingRadioEvents();
+        }
+
+        private void rdPremium2Hours_CheckedChanged(object sender, EventArgs e)
+        {
+            stopStandardParkingRadioEvents();
+            uncheckAllStandard();
+            startStandardParkingRadioEvents();
+        }
+
+        private void rdPremium4Hours_CheckedChanged(object sender, EventArgs e)
+        {
+            stopStandardParkingRadioEvents();
+            uncheckAllStandard();
+            startStandardParkingRadioEvents();
+        }
+
+        private void rdPremium1day_CheckedChanged(object sender, EventArgs e)
+        {
+            stopStandardParkingRadioEvents();
+            uncheckAllStandard();
+            startStandardParkingRadioEvents();
+        }
+
+        private void rdPremium2days_CheckedChanged(object sender, EventArgs e)
+        {
+            stopStandardParkingRadioEvents();
+            uncheckAllStandard();
+            startStandardParkingRadioEvents();
+        }
+
+        #endregion
 
     }
 }
