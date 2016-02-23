@@ -1,0 +1,15 @@
+Enter file contents hereusing System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GarageAutomation
+{
+    abstract class ConstantsManager
+    {
+        public string DatabaseLocation = "";
+        public string DatabaseUserName = "";
+        public string DatabasePassword = "";
+    }
+}
