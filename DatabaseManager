@@ -1,0 +1,36 @@
+Enter file contents hereusing System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data.Sql;
+using System.Data.SqlClient;
+using System.Data.SqlTypes;
+
+namespace GarageAutomation
+{
+    public class DatabaseManager
+    {
+        public DatabaseManager()
+        {
+            
+        }
+
+        public bool connectionTest()
+        {
+            try
+            {
+                //connection stuff here
+                return true;
+            }
+            catch
+            { return false; }
+        }
+
+        public bool queryPin(int pin)
+        {
+            //query the database for matching pin.
+            return true;
+        }
+    }
+}
