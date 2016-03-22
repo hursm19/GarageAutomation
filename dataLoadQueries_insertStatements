@@ -1,0 +1,125 @@
+--query to add a record to the parking_spaces table
+--columns: parking_space_id, parking_level, parking_space, is_taken, parking_type, parking_cost
+function void insertParkingSpace(double id, string parkingLevel, double parkingSpace, string is_taken, string parkingType, double cost)
+{
+	insert into parking_spaces
+	values(id, parkingLevel, parkingSpace, is_taken, parkingType, cost);
+	COMMIT;
+}
+
+--query to add a record to the residential_users table
+--columns: users_id, first_name, last_name, vehicle_type, license_plate, checkin_time, checkout_time, last_checkin_time, parking_space_id
+function void insertResidentialUser(double id, string firstName, string lastName, string vehicleType, string licensePlate, double parkingSpaceId)
+{
+	insert into residential_users
+	values(id, firstName, lastName, vehicleType, licensePlate, SYSDATE, SYSDATE, SYSDATE, parkingSpaceId);
+	COMMIT;
+}
+
+--query to update residential user upon re-entry to the ramp
+function void updateResidentialUserUponEntry(double id)
+{
+	update residential_users
+	set checkin_time = SYSDATE
+	where user_id = id;
+	COMMIT;
+}
+
+--query to update residential user upon leaving the ramp
+function void updateResidentialUserUponLeaving(double id)
+{
+	update residential_users
+	set checkout_time = SYSDATE
+	where user_id = id;
+	COMMIT;
+}
+
+--query to add a record to the public users table
+--columns: user_id, vehicle_type, license_plate, checkin_time, checkout_time, estimated_time, parking_space_id
+function void insertPublicUser(double id, string vehicleType, string licensePlate, int estimatedTime, double parkingSpaceId)
+{
+	insert into public_users
+	values(id, vehicleType, licensePlate, SYSDATE, NULL, estimatedTime, parkingSpaceId);
+	COMMIT;
+}
+
+--query to check out a public user
+function string checkOutPublicUser(double id)
+{
+	update public_users
+	SET last_checkin_time = SYSDATE
+	WHERE user_id = id;
+	COMMIT;
+	
+	return(select u.estimated_time,
+				  (u.checkout_time - u.checkin_time) time_in_ramp,
+				  p.parking_type,
+				  p.cost
+		   from public_users u,
+				parking_spaces p
+		   where u.user_id = id
+		   and u.parking_space_id = p.parking_space_id);
+}
+
+--query to retrieve all open parking spaces on level 1 from parking_spaces table
+function int getLevelOneOpenings()
+{
+	return (select count(parking_level)
+			from parking_spaces
+			where parking_level = 'A'
+			and is_taken = 0);
+}
+
+--query to retrieve all open parking spaces on level 2 from parking_spaces table
+function int getLevelTwoOpenings()
+{
+	return (select count(parking_level)
+			from parking_spaces
+			where parking_level = 'B'
+			and is_taken = 0);
+}
+
+--query to retrieve all open parking spaces on level 3 from parking_spaces table
+function int getLevelThreeOpenings()
+{
+	return (select count(parking_level)
+			from parking_spaces
+			where parking_level = 'C'
+			and is_taken = 0);
+}
+
+--query to retrieve all open parking spaces on level 4 from parking_spaces table
+function int getLevelFourOpenings()
+{
+	return (select count(parking_level)
+			from parking_spaces
+			where parking_level = 'D'
+			and is_taken = 0);
+}
+
+--query to retrieve all open parking spaces on level 5 from parking_spaces table
+function int getLevelFiveOpenings()
+{
+	return (select count(parking_level)
+			from parking_spaces
+			where parking_level = 'E'
+			and is_taken = 0);
+}
+
+--query to return total number of open parking spots in the ramp (except residential spots)
+function int getTotalOpenings()
+{
+	return (select count(parking_level)
+			from parking_spaces
+			where is_taken = 0
+			and parking_level <> 'B')
+}
+
+--function to update the residential user table whenever the user enters or leaves the ramp
+function void updateResidentialUser(string id)
+{
+	UPDATE residential_users
+	SET last_checkin_time = SYSDATE
+	WHERE user_id = id;
+	COMMIT;
+}
