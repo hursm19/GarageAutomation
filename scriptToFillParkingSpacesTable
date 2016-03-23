@@ -1,0 +1,42 @@
+//c# script to populate parking_spaces table
+//need to add this into a main, and insert the code inside the if's to use the DB connection to insert the records into the table
+int id = 1;
+
+for(int i = 0; i < 5; i++)
+{
+	for (int space = 1; space <= 24; space++)
+	{
+		if (i == 0)//code for level 'A'
+		{
+				insert into parking_spaces
+				values(id, 'A', space, 0, 'PREMIUM', 5.25);
+				COMMIT;
+		}
+		else if (i == 1)//code for level 'B'
+		{
+				insert into parking_spaces
+				values(id, 'B', space, 0, 'RESIDENTIAL', 0);
+				COMMIT;
+		}
+		else if (i == 2)//code for level 'C'
+		{
+				insert into parking_spaces
+				values(id, 'C', space, 0, 'STANDARD', 1.75);
+				COMMIT;
+		}
+		else if (i == 3)//code for level 'D'
+		{
+				insert into parking_spaces
+				values(id, 'D', space, 0, 'STANDARD', 1.75);
+				COMMIT;
+		}
+		else if (i == 4)//code for level 'E'
+		{
+				insert into parking_spaces
+				values(id, 'E', space, 0, 'STANDARD', 1.75);
+				COMMIT;
+		}
+		
+		id++;
+	}
+}
